@@ -1,6 +1,6 @@
 rule seurat_qc:
-    input: 
-        seurat_input
+    input:
+        aln="{}/star/{{sample}}/Aligned.sortedByCoord.out.bam".format(OUTDIR)
     output:
         seurat_obj= f"{OUTDIR}/seurat/{{sample}}/1_preprocessing/seurat_pre-qc.rds",
         pre_filt_plot=report(f"{OUTDIR}/seurat/{{sample}}/1_preprocessing/1_vlnplot_QC_variables_prefilt.pdf", caption="../report/conf/pre_filt_plot.rst", category="2_Single-cell QC"),

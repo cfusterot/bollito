@@ -13,7 +13,7 @@ rule star_index:
     log:
         f"{LOGDIR}/star_index/index.log"
     wrapper:
-        "0.60.0/bio/star/index"
+        "v3.7.0/bio/star/index"
 
 def input_merge(wildcards):  
     return list(units.loc[(wildcards.sample), "fq" + wildcards.group])
@@ -63,21 +63,24 @@ rule star:
         #star needs the barcoding read (read 1) to be in the second position
         fq1=lambda wc: input_star(wc.sample,2),
         fq2=lambda wc: input_star(wc.sample,1),
-        index=config["ref"]["idx"]
+        idx=config["ref"]["idx"]
     output:
-        f"{OUTDIR}/star/{{sample}}/Aligned.sortedByCoord.out.bam",
-        f"{OUTDIR}/star/{{sample}}/Solo.out/Gene/Summary.csv",
-        f"{OUTDIR}/star/{{sample}}/Solo.out/Velocyto/Summary.csv"
+        aln="{}/star/{{sample}}/Aligned.sortedByCoord.out.bam".format(OUTDIR),
+        velo="{}/star/{{sample}}/Solo.out/Velocyto/Summary.csv".format(OUTDIR)
     log:
         f"{LOGDIR}/star/{{sample}}.log"
     benchmark:
         f"{LOGDIR}/star/{{sample}}.bmk"
     params:
         index=config["ref"]["idx"],
-        extra=extra_params
+        extra=extra_params,
+        prefix="{}/star/{{sample}}/".format(OUTDIR)
     threads: get_resource("star","threads")
+    conda: "../envs/star.yaml"
     resources:
         mem_mb=get_resource("star","mem_mb"),
         walltime=get_resource("star","walltime")
-    wrapper: 
-        "0.60.0/bio/star/align"
+    shell: 
+        """
+        STAR --runThreadN 8 --genomeDir {input.idx} --readFilesIn {input.fq1} {input.fq2} --readFilesCommand zcat --outFileNamePrefix {params.prefix} --outStd Log {params.extra}
+        """
