@@ -2,8 +2,8 @@ channels:
     - bu_cnio
     - conda-forge
     - bioconda
-
 dependencies:
+    - r-base
     - libgfortran
     - r-seurat=3.2.3
     - r-dplyr

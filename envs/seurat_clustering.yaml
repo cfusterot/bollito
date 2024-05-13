@@ -4,10 +4,11 @@ channels:
     - bioconda
 
 dependencies:
-    - r-base=4.0.0
+    - r-base
     - r-lisi
     - libgfortran
     - r-seurat=3.2.3
+    - r-igraph
     - r-reticulate
     - umap-learn
     - r-ggplot2

@@ -1,7 +1,6 @@
 channels:
-  - bu_cnio
   - conda-forge
   - bioconda
 
 dependencies:
-  - bioconda::rseqc=5.0.3
+  - bioconda::star=2.7.11b
